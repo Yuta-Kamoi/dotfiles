@@ -67,10 +67,8 @@ source ~/ghq/github.com/supercrabtree/k/k.sh
 
 # エージェントが起動していない、または鍵が登録されていない場合に処理を実行
 # VSCodeのターミナル用のSSHエージェントの永続化ロジック
-
 # 起動情報を保存するファイル
 AGENT_ENV="$HOME/.ssh/agent.env"
-
 # 1. 環境ファイルが存在し、かつエージェントが生きているか確認
 if [ -f "${AGENT_ENV}" ]; then
     . "${AGENT_ENV}" > /dev/null 2>&1
@@ -81,7 +79,6 @@ if [ -f "${AGENT_ENV}" ]; then
         rm "${AGENT_ENV}"
     fi
 fi
-
 # 2. エージェントが起動していない場合、新規起動
 if [ ! -f "${AGENT_ENV}" ]; then
     # 新しいエージェントを起動し、情報をファイルに保存
