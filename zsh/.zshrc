@@ -76,7 +76,7 @@ if [ -f "${AGENT_ENV}" ]; then
     # 環境変数を読み込んだ後、PIDが存在し、かつプロセスが動いているか再チェック
     if ! kill -0 "$SSH_AGENT_PID" > /dev/null 2>&1; then
         # プロセスが死んでいたらファイルを削除し、再起動させる
-        rm "${AGENT_ENV}"
+        rm -f "${AGENT_ENV}"
     fi
 fi
 # 2. エージェントが起動していない場合、新規起動
