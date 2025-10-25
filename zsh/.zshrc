@@ -105,6 +105,59 @@ if [[ "$(uname)" == 'Linux' ]]; then
     # lsの色を変える.dircolorsを適用
     eval $(dircolors -b ~/.dircolors)
 
+    # WSL: macのopen風（PowerShell一本化）
+    open() {
+      if [[ $# -eq 0 ]]; then
+        explorer.exe .
+        return
+      fi
+
+      for arg in "$@"; do
+        # URL は & を含むので PowerShell 経由がラク
+        if [[ "$arg" =~ '^[A-Za-z]+://' ]]; then
+          powershell.exe -NoProfile -Command "Start-Process '$arg'"
+          continue
+        fi
+
+        # パス: 相対はそのまま、絶対(~,/で開始)は Windows 形式に変換
+        if [[ "$arg" = /* || "$arg" = ~* ]]; then
+          cmd.exe /c start "" "$(wslpath -w "$arg")"
+        else
+          cmd.exe /c start "" "$arg"
+        fi
+      done
+    }
+
+    # ===== Obsidian opener (WSL) =====
+    export OB_VAULT_NAME="notes"
+    export OB_VAULT_PATH="$HOME/notes"
+
+    _obsi_urlencode() {
+      python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$1"
+    }
+
+    obsi() {
+      # 引数なし → ボールトを開く
+      if [[ $# -eq 0 ]]; then
+        powershell.exe -NoProfile -Command "Start-Process 'obsidian://open?vault=${OB_VAULT_NAME}'"
+        return
+      fi
+
+      local target="$1" rel
+
+      # 絶対/ホームパスならボールト相対に直す
+      if [[ "$target" = /* || "$target" = ~* ]]; then
+        rel="$(realpath --relative-to="$OB_VAULT_PATH" "$target" 2>/dev/null)" || {
+          echo "not under vault: $target" >&2; return 1; }
+      else
+        rel="$target"
+      fi
+
+      local enc="$(_obsi_urlencode "$rel")"
+      powershell.exe -NoProfile -Command "Start-Process 'obsidian://open?vault=${OB_VAULT_NAME}&file=${enc}'"
+    }
+
+
   fi
 fi
 
@@ -112,7 +165,55 @@ fi
 #################
 # MACのみの設定 #
 #################
-function connect_nas() {
-    # NAS接続コマンドを実行 (パスワードは対話形式で入力)
+if [[ "$OSTYPE" == darwin* ]]; then
+  # NAS接続コマンドを実行 (パスワードは対話形式で入力)
+  function connect_nas() {
     mount_smbfs "//admin@192.168.1.21/share" "$HOME/NAS" 2>/dev/null
-}
+  }
+
+  # ---- Obsidian 設定 ----
+  export OB_VAULT_NAME="notes"        # Obsidian の“ボールト名”（UIに出る表示名）
+  export OB_VAULT_PATH="$HOME/notes"  # ボールトの実体パス（例: /Users/you/notes）
+
+  # URLエンコード（日本語/スペース対応）
+  _obsi_urlencode() {
+    python3 -c 'import sys,urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$1"
+  }
+
+  # 絶対/ホームパス → ボールト直下からの相対パスに変換（外なら失敗）
+  _obsi_to_vault_rel() {
+    python3 -c '
+  import os, sys
+  vault = os.path.abspath(os.path.expanduser(sys.argv[1]))
+  p     = os.path.abspath(os.path.expanduser(sys.argv[2]))
+  if os.path.commonpath([p, vault]) != vault:
+      sys.exit(1)
+  print(os.path.relpath(p, vault))
+  ' "$OB_VAULT_PATH" "$1"
+  }
+
+  # obsi: Obsidian で開く
+  #  - 引数なし: ボールトだけ開く
+  #  - 引数あり: file= に渡す（相対はそのまま。/ や ~ で始まる絶対は vault 相対に変換）
+  #  - 日本語/スペースは自動でURLエンコード
+  obsi() {
+    if [[ $# -eq 0 ]]; then
+      open "obsidian://open?vault=${OB_VAULT_NAME}"
+      return
+    fi
+
+    local target="$1" rel
+
+    if [[ "$target" = /* || "$target" = ~* ]]; then
+      rel="$(_obsi_to_vault_rel "$target")" || {
+        echo "not under vault: $target" >&2
+        return 1
+      }
+    else
+      rel="$target"
+    fi
+
+    local enc="$(_obsi_urlencode "$rel")"
+    open "obsidian://open?vault=${OB_VAULT_NAME}&file=${enc}"
+  }
+fi
