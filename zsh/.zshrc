@@ -128,6 +128,41 @@ if [[ "$(uname)" == 'Linux' ]]; then
       done
     }
 
+    # Google Driveアプリを動的に探して起動する関数 (Windows形式パスに変換)
+    gdrive-start() {
+    local GD_BASE="/mnt/c/Program Files/Google/Drive File Stream"
+    local WIN_BASE="C:\\Program Files\\Google\\Drive File Stream" # Windows形式のベースパス
+
+    # 1. 最新のバージョン番号のディレクトリを動的に検索 (Linuxパスで検索)
+    local LATEST_VERSION_DIR
+    LATEST_VERSION_DIR=$(find "$GD_BASE" -maxdepth 1 -type d -name "[0-9]*" | tail -1)
+
+    if [ -z "$LATEST_VERSION_DIR" ]; then
+        echo "Error: Google Drive File Streamのバージョンフォルダが見つかりませんでした。"
+        return 1
+    fi
+
+    # 2. 実行ファイルのフルパスをLinux形式で取得
+    local LINUX_EXE_PATH="$LATEST_VERSION_DIR/GoogleDriveFS.exe"
+
+    # 3. LinuxパスをWindowsパスに変換する
+    # LATEST_VERSION_DIRから /mnt/c を取り除き、残りの / を \ に置換し、WIN_BASEと結合
+    local VERSION_SUBPATH=${LINUX_EXE_PATH#$GD_BASE} # /116.0.6.0/GoogleDriveFS.exe の部分
+    
+    # WSL環境で使える sed で / を \\ に置換し、WIN_BASEと結合（Windowsパスの \ はエスケープが必要）
+    local WIN_EXE_PATH="${WIN_BASE}${VERSION_SUBPATH//\//\\}"
+
+    # 4. Windowsの start コマンドを使用して、Windows形式のパスを起動
+    if [ -x "$LINUX_EXE_PATH" ]; then
+        echo "Google DriveをWindowsプロセスとして起動します..."
+        # Windowsの start コマンドに、変換した Windows形式のパスを渡す
+        /mnt/c/Windows/System32/cmd.exe /C start "" "$WIN_EXE_PATH"
+    else
+        echo "Error: 実行ファイルが見つからないか、権限がありません: $LINUX_EXE_PATH"
+        return 1
+    fi
+    }
+
     # ===== Obsidian opener (WSL) =====
     export OB_VAULT_NAME="notes"
     export OB_VAULT_PATH="$HOME/notes"
@@ -156,8 +191,6 @@ if [[ "$(uname)" == 'Linux' ]]; then
       local enc="$(_obsi_urlencode "$rel")"
       powershell.exe -NoProfile -Command "Start-Process 'obsidian://open?vault=${OB_VAULT_NAME}&file=${enc}'"
     }
-
-
   fi
 fi
 
