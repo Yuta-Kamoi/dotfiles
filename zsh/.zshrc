@@ -41,11 +41,12 @@ setopt correct
 
 # 履歴設定
 HISTFILE=~/.zsh_history
-export HISTSIZE=1000
-export SAVEHIST=10000
+export HISTSIZE=50000
+export SAVEHIST=50000
 setopt share_history
 setopt hist_reduce_blanks
 setopt hist_ignore_all_dups
+setopt hist_ignore_dups
 
 # 起動時に他にシェルが起動していなければtmux起動
 # [[ -z "$TMUX" && ! -z "$PS1" ]] && tmux
