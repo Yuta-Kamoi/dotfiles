@@ -60,12 +60,6 @@ ENHANCD_HYPHEN_ARG="-ls"
 ENHANCD_DOT_ARG="-up"
 . "$HOME/ghq/github.com/b4b4r07/enhancd/init.sh"
 
-# gotoを有効化
-source ~/ghq/github.com/iridakos/goto/goto.sh
-
-# kを有効化
-source ~/ghq/github.com/supercrabtree/k/k.sh
-
 # # エージェントが起動していない、または鍵が登録されていない場合に処理を実行
 # # VSCodeのターミナル用のSSHエージェントの永続化ロジック
 # # 起動情報を保存するファイル
