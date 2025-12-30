@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 "dein Scripts-----------------------------
 " MacのConda環境のPython3をVimに教える。WSLには存在しないパスなので影響なし。
 let g:python3_host_prog = '/opt/anaconda3/bin/python3'

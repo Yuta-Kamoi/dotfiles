@@ -245,3 +245,20 @@ if [[ "$OSTYPE" == darwin* ]]; then
     open "obsidian://open?vault=${OB_VAULT_NAME}&file=${enc}"
   }
 fi
+
+########################
+# Native Ubuntu の設定 #
+########################
+# OSがLinux、かつカーネル名に microsoft が含まれない場合
+if [[ "$(uname)" == 'Linux' && "$(uname -r)" != *microsoft* && "$(uname -r)" != *Microsoft* ]]; then
+  
+  # NAS接続コマンド (Ubuntu用)
+  function connect_nas() {
+    # フォルダがなければ作成
+    [[ ! -d "$HOME/NAS" ]] && mkdir -p "$HOME/NAS"
+    
+    # マウント実行
+    sudo mount -t cifs "//192.168.1.21/share" "$HOME/NAS" -o user=admin,uid=$(id -u),gid=$(id -g),vers=2.0
+  }
+
+fi
