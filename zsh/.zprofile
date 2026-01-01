@@ -45,3 +45,6 @@ elif [[ "$(uname)" == 'Linux' ]]; then
     source "$HOME/dotfiles/zsh/.zprofile.d/wsl.zsh"
   fi
 fi
+
+# Created by `pipx` on 2026-01-01 04:38:30
+export PATH="$PATH:/home/kamo9420/.local/bin"

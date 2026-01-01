@@ -53,12 +53,11 @@ setopt hist_ignore_dups
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS="--ansi --height=100% --info=inline --border"
 
-# enhancdを有効化
-source ~/ghq/github.com/b4b4r07/enhancd/init.sh
-# "cd ..", "cd -"の挙動をデフォルトにもどし、代わりに-up,-lsを設定
+# enhancdの設定。"cd ..", "cd -"の挙動をデフォルトにもどし、代わりに-up,-lsを設定
 ENHANCD_HYPHEN_ARG="-ls"
 ENHANCD_DOT_ARG="-up"
-. "$HOME/ghq/github.com/b4b4r07/enhancd/init.sh"
+# enhancdを有効化
+source ~/ghq/github.com/b4b4r07/enhancd/init.sh
 
 # # エージェントが起動していない、または鍵が登録されていない場合に処理を実行
 # # VSCodeのターミナル用のSSHエージェントの永続化ロジック
@@ -262,3 +261,6 @@ if [[ "$(uname)" == 'Linux' && "$(uname -r)" != *microsoft* && "$(uname -r)" != 
   }
 
 fi
+
+# Created by `pipx` on 2026-01-01 04:38:30
+export PATH="$PATH:/home/kamo9420/.local/bin"
