@@ -259,7 +259,24 @@ if [[ "$(uname)" == 'Linux' && "$(uname -r)" != *microsoft* && "$(uname -r)" != 
     # マウント実行
     sudo mount -t cifs "//192.168.1.21/share" "$HOME/NAS" -o user=admin,uid=$(id -u),gid=$(id -g),vers=2.0
   }
+  
+  # Google Driveを手動で同期するコマンドのエイリアス
+  # ※手動同期をしなくても2分ごとに自動同期されている。
+  alias sync-g='nohup rclone bisync gdrive: ~/gdrive --drive-skip-shortcuts --drive-skip-gdocs > /dev/null 2>&1 &'
 
+  # function fix-input() {
+  #   # Exitはマウスで済ませた前提
+  #   # IBusをreplaceモードで確実に再起動
+  #   ibus-daemon -rdx
+  #   sleep 0.5
+
+  #   # 入力言語を設定
+  #   gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'mozc-jp'), ('xkb', 'jp')]"
+  #   sleep 0.5
+    
+  #   ibus restart
+  #   echo "IBus(Mozc) 復旧完了"
+  # }
 fi
 
 # Created by `pipx` on 2026-01-01 04:38:30

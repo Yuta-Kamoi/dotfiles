@@ -76,6 +76,11 @@ set ambiwidth=double
 " クリップボードと連携
 set clipboard=unnamed
 
+" 折りたたみ機能を有効にする
+set foldmethod=indent
+" 初期状態を開いた状態にする
+" autocmd BufRead * normal zR
+
 "バックスペースでの行移動を可能にする
 set backspace=indent,eol,start
 
@@ -92,9 +97,15 @@ set history=10000
 " ファイルを開きなおしても前回の操作履歴へ戻せる
 " 事前に~/.vim/undoディレクトリを作っておく必要がある
 if has('persistent_undo')
-  set undodir=~/.vim/undo
+  set undodir=~/.vim/undo//
   set undofile
 endif
+
+" swapファイルの保存場所指定
+set directory=$HOME/.vim/swap//
+
+" バックアップファイルの保存場所指定
+set backupdir=$HOME/.vim/backup//
 
 " マウス操作の有効化 & ホイール操作の有効化
 set mouse=a
