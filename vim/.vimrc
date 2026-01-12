@@ -77,7 +77,8 @@ set showcmd
 set ambiwidth=double
 
 " クリップボードと連携
-set clipboard=unnamed
+" "+yでコピーするので不要
+" set clipboard=unnamed
 
 " 折りたたみ機能を有効にする
 set foldmethod=indent
