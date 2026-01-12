@@ -407,4 +407,10 @@ map <C-n> :NERDTreeToggle<CR>
 " 隠しファイルを表示する
 let NERDTreeShowHidden = 1
 
+" NERDTreeでブックマークを常時表示
+let NERDTreeShowBookmarks = 1
+
+" NERDTreeのウィンドウしか開かれていないときは自動的に閉じる
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 " End other plugins setting <<------------------------
