@@ -44,6 +44,9 @@ endif
 
 " vim setting start >>-----------------------------------------
 " setting
+" <Leader>というプレフィックスキーにスペースを使用する
+let mapleader = "\<Space>"
+
 "文字コードをUFT-8に設定
 set encoding=utf-8
 set fileencoding=utf-8
@@ -110,9 +113,6 @@ set backupdir=$HOME/.vim/backup//
 " マウス操作の有効化 & ホイール操作の有効化
 set mouse=a
 set ttymouse=xterm2
-
-" <Leader>というプレフィックスキーにスペースを使用する
-let g:mapleader = "\<Space>"
 
 " コマンドラインモードでTABキーによるファイル名補完を有効にする
 set wildmenu wildmode=list:longest,full
