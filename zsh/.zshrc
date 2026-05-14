@@ -251,7 +251,7 @@ fi
 # OSがLinux、かつカーネル名に microsoft が含まれない場合
 if [[ "$(uname)" == 'Linux' && "$(uname -r)" != *microsoft* && "$(uname -r)" != *Microsoft* ]]; then
   
-  # NAS接続コマンド (Ubuntu用)
+½4½4½4  # NAS接続コマンド (Ubuntu用)
   function connect_nas() {
     # フォルダがなければ作成
     [[ ! -d "$HOME/NAS" ]] && mkdir -p "$HOME/NAS"
@@ -281,3 +281,24 @@ fi
 
 # Created by `pipx` on 2026-01-01 04:38:30
 export PATH="$PATH:/home/kamo9420/.local/bin"
+
+#######################################
+# Linux共通設定 (WSL2 & Native Ubuntu) #
+#######################################
+if [[ "$(uname)" == 'Linux' ]]; then
+  function logger-open() {
+    # 確実に「昨日」の日付を計算
+    local target_date=$(date -d "yesterday" +"%Y-%m-%d")
+    
+    # 1. WSL上のフルパスを作成
+    local linux_path="$HOME/notes/logger/daily_notes/${target_date}.md"
+
+    # 2. Linuxパスを「Windows形式のフルパス」に変換 (G:\My Drive\...)
+    # これを通さないと VS Code がパスを勘違いして保存エラーになります
+    local win_path=$(wslpath -w "$linux_path")
+
+    # 3. code -r で実行
+    # パスをダブルクォートで囲むことで、スペースがあっても「1つのファイル」として認識させます
+    code -r "$win_path"
+}
+fi
