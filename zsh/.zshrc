@@ -66,7 +66,6 @@ source ~/ghq/github.com/b4b4r07/enhancd/init.sh
 # # 1. 環境ファイルが存在し、かつエージェントが生きているか確認
 # if [ -f "${AGENT_ENV}" ]; then
 #     . "${AGENT_ENV}" > /dev/null 2>&1
-#     
 #     # 環境変数を読み込んだ後、PIDが存在し、かつプロセスが動いているか再チェック
 #     if ! kill -0 "$SSH_AGENT_PID" > /dev/null 2>&1; then
 #         # プロセスが死んでいたらファイルを削除し、再起動させる
