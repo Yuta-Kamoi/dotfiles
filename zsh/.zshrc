@@ -300,5 +300,8 @@ if [[ "$(uname)" == 'Linux' ]]; then
     # 3. code -r で実行
     # パスをダブルクォートで囲むことで、スペースがあっても「1つのファイル」として認識させます
     code -r "$win_path"
-}
+  }
+  function logger() {
+    python3 "$HOME/notes/logger/scripts/run_logger.py" "$@"
+  }
 fi
