@@ -281,7 +281,6 @@ fi
 
 # Created by `pipx` on 2026-01-01 04:38:30
 export PATH="$PATH:/home/kamo9420/.local/bin"
-
 #######################################
 # Linux共通設定 (WSL2 & Native Ubuntu) #
 #######################################
@@ -290,18 +289,26 @@ if [[ "$(uname)" == 'Linux' ]]; then
     # 確実に「昨日」の日付を計算
     local target_date=$(date -d "yesterday" +"%Y-%m-%d")
     
-    # 1. WSL上のフルパスを作成
-    local linux_path="$HOME/notes/logger/daily_notes/${target_date}.md"
+    # 1. WSL上のパスを定義
+    local base_path="$HOME/notes/logger/daily_notes/${target_date}.md"
 
-    # 2. Linuxパスを「Windows形式のフルパス」に変換 (G:\My Drive\...)
-    # これを通さないと VS Code がパスを勘違いして保存エラーになります
-    local win_path=$(wslpath -w "$linux_path")
+    # 2. シンボリックリンクを実体のパス (/mnt/g/...) に解決する
+    # これをやらないと \\wsl.localhost\... というパスになってエラーが出ます
+    local real_path=$(readlink -f "$base_path")
 
-    # 3. code -r で実行
-    # パスをダブルクォートで囲むことで、スペースがあっても「1つのファイル」として認識させます
+    # 3. 開く前に必ずディレクトリが存在するようにする（ENOENT対策）
+    mkdir -p "$(dirname "$real_path")"
+
+    # 4. 実体パスを「Windows形式のフルパス」に変換 (G:\My Drive\...)
+    local win_path=$(wslpath -w "$real_path")
+
+    # 5. VS Codeで実行
     code -r "$win_path"
   }
+
   function logger() {
-    python3 "$HOME/notes/logger/scripts/run_logger.py" "$@"
+    # Windows側のPythonを呼び出し、Windowsパスにあるスクリプトを実行する
+    # ※パスは先ほど教えていただいた Gドライブのものに書き換えています
+    python.exe "G:\My Drive\Documents\notes\logger\scripts\run_logger.py" "$@"
   }
 fi
