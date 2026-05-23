@@ -37,3 +37,4 @@ function nid {
 # nvim コマンドで起動する設定
 Set-Alias nvim "$HOME\Documents\nvim-win64\bin\nvim.exe"
 Set-Alias vim "$HOME\Documents\nvim-win64\bin\nvim.exe"
+
